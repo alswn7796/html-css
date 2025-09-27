@@ -1,22 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>혼밥페어링 - 회원가입</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="frame3">
-        <h1 class="title">회원가입</h1>
-        <input type="text" placeholder="이름" class="input-field">
-        <input type="email" placeholder="이메일" class="input-field">
-        <input type="password" placeholder="비밀번호" class="input-field">
-        <button class="btn-signup">회원가입</button>
-        <p class="signup-text">
-            이미 계정이 있나요? 
-            <a href="index.html">로그인</a>
-        </p>
-    </div>
+  <h1>회원가입</h1>
+  <input type="email" id="email" placeholder="학교 이메일 입력"><br>
+  <input type="password" id="password" placeholder="비밀번호 입력"><br>
+  <button id="signupBtn">회원가입</button>
+  <p id="msg"></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } 
+      from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMzjzJkN9pJzaQKghd5sExNoId38dumYI",
+      authDomain: "honbap-app.firebaseapp.com",
+      projectId: "honbap-app",
+      storageBucket: "honbap-app.firebasestorage.app",
+      messagingSenderId: "486218081205",
+      appId: "1:486218081205:web:7b9f5c909884e23f972ffc",
+      measurementId: "G-WEV44TL7PJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const msg = document.getElementById('msg');
+
+    document.getElementById('signupBtn').addEventListener('click', () => {
+      createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+        .then(userCredential => {
+          sendEmailVerification(userCredential.user).then(() => {
+            msg.textContent = '인증 메일을 전송했습니다. 이메일을 확인하세요.';
+            setTimeout(() => {
+              window.location.href = 'signup_complete.html';
+            }, 3000);
+          });
+        })
+        .catch(error => {
+          msg.textContent = '회원가입 실패: ' + error.message;
+        });
+    });
+  </script>
 </body>
 </html>
