@@ -1,21 +1,55 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>혼밥페어링 - 로그인</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="frame1">
-        <h1 class="title">혼밥페어링</h1>
-        <input type="email" placeholder="이메일" class="input-field">
-        <input type="password" placeholder="비밀번호" class="input-field">
-        <button class="btn-login">로그인</button>
-        <p class="signup-text">
-            계정이 없나요? 
-            <a href="signup.html">회원가입</a>
-        </p>
-    </div>
+  <h1>로그인</h1>
+  <input type="email" id="email" placeholder="이메일"><br>
+  <input type="password" id="password" placeholder="비밀번호"><br>
+  <button id="loginBtn">로그인</button>
+  <p id="msg"></p>
+  <p>계정이 없으신가요? <a href="signup.html" style="color:#1e90ff;">회원가입</a></p>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } 
+      from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMzjzJkN9pJzaQKghd5sExNoId38dumYI",
+      authDomain: "honbap-app.firebaseapp.com",
+      projectId: "honbap-app",
+      storageBucket: "honbap-app.firebasestorage.app",
+      messagingSenderId: "486218081205",
+      appId: "1:486218081205:web:7b9f5c909884e23f972ffc",
+      measurementId: "G-WEV44TL7PJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const msg = document.getElementById('msg');
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+        .then(userCredential => {
+          if (userCredential.user.emailVerified) {
+            msg.textContent = '로그인 성공!';
+            // 로그인 성공 후 이동할 페이지 설정 가능
+          } else {
+            msg.textContent = '이메일 인증이 완료되지 않았습니다. 이메일을 확인하세요.';
+          }
+        })
+        .catch(error => {
+          msg.textContent = '로그인 실패: ' + error.message;
+        });
+    });
+  </script>
 </body>
 </html>
